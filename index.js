@@ -116,6 +116,23 @@ function handleToggleSearchFilter(){
     renderShoppingList();
 });
 }
+function editItemName(itemId, newName){
+  const itemToEdit = Store.items.find(item => item.id === itemId);
+  itemToEdit.name= newName;
+}
+function handleEditItemSubmit(){
+  $(".js-shopping-list").on('submit','#edit-form', event => { 
+    // How do I attach form element to the html of each item without affecting it
+    // the way it appears on the list? Must somehow plug in how #edit-form and .js-edit-item-entry but only on click
+    event.preventDefault;
+    const id = getItemIdFromElement(event.target);
+    const newName= $('.js-edit-item-entry').val();
+    editItemName(id, newName);
+    renderShoppingList();
+  });
+}
+
+
 
 function main() {
   renderShoppingList();
@@ -124,6 +141,7 @@ function main() {
   handleDeleteItemClicked();
   handleToggleHideFilter();
   handleToggleSearchFilter();
+  handleEditItemSubmit();
 }
 
 $(main);
