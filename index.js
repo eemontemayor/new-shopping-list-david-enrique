@@ -2,12 +2,13 @@
 
 const STORE = {
   items:[
-  {id: cuid(), name: 'apples', checked: false},
-  {id: cuid(), name: 'oranges', checked: false},
-  {id: cuid(), name: 'milk', checked: true},
-  {id: cuid(), name: 'bread', checked: false},
+  {id: cuid(), name: 'apples', checked: false, match:false},
+  {id: cuid(), name: 'oranges', checked: false, match: false},
+  {id: cuid(), name: 'milk', checked: true, match: false},
+  {id: cuid(), name: 'bread', checked: false, match: false},
 ],
   hideCompleted: false,
+  hideNonMatches: false,
 };
 
 function generateItemElement(item){
@@ -33,6 +34,9 @@ function renderShoppingList() {
   let filteredItems= STORE.items;
   if (STORE.hideCompleted){
     filteredItems = filteredItems.filter(item => !item.checked);
+  }
+  if (STORE.hideNonMatches){
+    filteredItems= filteredItems.filter(item=> item.match);
   }
   const shoppingListItemsString = generateShoppingItemsString(filteredItems);
   $('.js-shopping-list').html(shoppingListItemsString);
@@ -98,6 +102,20 @@ function handleToggleHideFilter(){
   });
 }
 
+function toggleSeachFilter(){
+  STORE.hideNonMatches = !STORE.hideNonMatches; 
+}
+
+function handleToggleSearchFilter(){
+  $('#search-term-filter').submit(function(event){
+    event.preventDefault();
+    const substr = $('.js-search-term-entry').val();
+    const filteredItems = STORE.items.filter(x => x.name.includes(substr));
+    filteredItems.forEach(x => x.match = true);
+    toggleSeachFilter();
+    renderShoppingList();
+});
+}
 
 function main() {
   renderShoppingList();
@@ -105,6 +123,7 @@ function main() {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleHideFilter();
+  handleToggleSearchFilter();
 }
 
 $(main);
